@@ -1,0 +1,19 @@
+# Virtual Environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment Variables
+.env
+
+# Google Credentials
+credentials/
+
+# VS Code
+.vscode/
+
+# OS Files
+.DS_Store
+Thumbs.db
