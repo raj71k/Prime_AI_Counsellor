@@ -1,4 +1,5 @@
 import gspread
+import config
 from google.oauth2.service_account import Credentials
 
 
@@ -18,11 +19,11 @@ class GoogleSheet:
 
         self.client = gspread.authorize(creds)
 
-        self.spreadsheet = self.client.open_by_key("1GSwPPEmCiuzHe0aBJmYpUpbaVzVcXKEtlzQyL5WtFlY")
+        self.spreadsheet = self.client.open_by_key(config.SPREADSHEET_ID)
 
 
     def get_courses(self):
 
-        sheet = self.spreadsheet.worksheet("Courses")
+        sheet = self.spreadsheet.worksheet(config.COURSES_SHEET)
 
         return sheet.get_all_records()
