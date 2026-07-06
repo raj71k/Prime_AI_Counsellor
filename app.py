@@ -1,7 +1,11 @@
-from chatbot.ai_engine import AIEngine
+from chatbot.prompt_manager import PromptManager
+from chatbot.conversation_engine import ConversationEngine
 
-ai = AIEngine()
+bot = ConversationEngine()
 
-answer = ai.ask("Say hello to Prime Computers.")
+question = input("Student: ")
 
+answer = bot.chat(question)
+
+print("\nAI:\n")
 print(answer)

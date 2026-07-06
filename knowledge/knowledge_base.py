@@ -15,7 +15,7 @@ class KnowledgeBase:
 
         for course in courses:
 
-            if course_name.lower() in course["Course Name"].lower():
+            if course["Course Name"].lower() in course_name.lower():
 
                 return course
 
