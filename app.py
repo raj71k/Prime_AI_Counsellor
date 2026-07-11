@@ -1,11 +1,18 @@
-from chatbot.prompt_manager import PromptManager
-from chatbot.conversation_engine import ConversationEngine
+from models.lead import Lead
+from lead.lead_manager import LeadManager
 
-bot = ConversationEngine()
 
-question = input("Student: ")
+lead = Lead(
+    name="Aarya Khanvilkar",
+    mobile="9820086724",
+    email="ark@gmail.com",
+    course="AI",
+    message="Interested in AI course"
+)
 
-answer = bot.chat(question)
+manager = LeadManager()
 
-print("\nAI:\n")
-print(answer)
+success, message = manager.save(lead)
+
+print(success)
+print(message)

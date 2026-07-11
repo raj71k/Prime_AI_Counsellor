@@ -27,3 +27,20 @@ class GoogleSheet:
         sheet = self.spreadsheet.worksheet(config.COURSES_SHEET)
 
         return sheet.get_all_records()
+    
+    def save_lead(self, lead):
+
+        sheet = self.spreadsheet.worksheet(config.LEADS_SHEET)
+
+        sheet.append_row([
+            lead.created_at,
+            lead.name,
+            lead.mobile,
+            lead.email,
+            lead.course,
+            lead.message,
+            lead.source,
+            lead.status
+        ])
+
+        return True
