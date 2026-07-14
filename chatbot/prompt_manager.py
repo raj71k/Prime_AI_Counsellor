@@ -28,6 +28,8 @@ RULES:
     def build_prompt(self, question, knowledge):
         formatted_knowledge = ""
         for key, value in knowledge.items():
+            if key == "CourseID":
+                continue
             formatted_knowledge += f"{key}: {value}\n"
         return f"""
     {self.build_system_prompt()}

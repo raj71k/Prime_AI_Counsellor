@@ -1,18 +1,15 @@
-from models.lead import Lead
-from lead.lead_manager import LeadManager
+from chatbot.conversation_engine import ConversationEngine
 
+bot = ConversationEngine()
 
-lead = Lead(
-    name="Aarya Khanvilkar",
-    mobile="9820086724",
-    email="ark@gmail.com",
-    course="AI",
-    message="Interested in AI course"
-)
+while True:
 
-manager = LeadManager()
+    question = input("\nStudent: ")
 
-success, message = manager.save(lead)
+    if question.lower() == "exit":
+        break
 
-print(success)
-print(message)
+    answer = bot.chat(question)
+
+    print("\nAI:")
+    print(answer)
