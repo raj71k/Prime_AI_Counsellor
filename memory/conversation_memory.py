@@ -5,6 +5,9 @@ class ConversationMemory:
         self.student_name = None
         self.mobile = None
         self.email = None
+        self.lead_collection = False
+
+        self.waiting_for = None
 
     def set_course(self, course):
 
@@ -20,3 +23,6 @@ class ConversationMemory:
         self.student_name = None
         self.mobile = None
         self.email = None
+        self.lead_collection = False
+
+        self.waiting_for = None

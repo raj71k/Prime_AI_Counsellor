@@ -12,7 +12,50 @@ class ConversationEngine:
         self.memory = ConversationMemory()
 
     def chat(self, question):
+        # ==========================================
+        # Lead Collection Flow
+        # ==========================================
 
+        if self.memory.lead_collection:
+
+            if self.memory.waiting_for == "name":
+
+                self.memory.student_name = question
+                self.memory.waiting_for = "mobile"
+
+                return (
+                f"Thank you {question}! 😊\n\n"
+                "Please share your mobile number."
+             )
+            
+        question_lower = question.lower()
+
+        lead_keywords = [
+            "join",
+            "admission",
+            "interested",
+            "enroll",
+            "enrol",
+            "register",
+            "demo",
+            "book demo"
+        ]
+
+        if any(keyword in question_lower for keyword in lead_keywords):
+
+            course = self.kb.find_course(question)
+
+        if course:
+            self.memory.set_course(course)
+
+        self.memory.lead_collection = True
+        self.memory.waiting_for = "name"
+
+        return (
+            "Wonderful! 😊\n\n"
+            "I'd be happy to help you with admission.\n\n"
+            "May I know your name?"
+        )    
         course = self.kb.find_course(question)
         if course:
             self.memory.set_course(course)
