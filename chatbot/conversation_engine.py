@@ -5,6 +5,9 @@ from memory.conversation_memory import ConversationMemory
 from models.lead import Lead
 from lead.lead_manager import LeadManager
 from constants import COURSE_NAME
+from lead.lead_flow import LeadFlow
+from intent.intent_detector import IntentDetector
+from intent.intent_detector import Intent
 
 class ConversationEngine:
 
@@ -13,114 +16,36 @@ class ConversationEngine:
         self.pm = PromptManager()
         self.ai = AIEngine()
         self.memory = ConversationMemory()
+        self.lead_flow = LeadFlow()
+        self.intent = IntentDetector()
 
     def chat(self, question):
-
+        intent = self.intent.detect(question)
     # ==========================================
     # STEP 1 : Continue Lead Collection
     # ==========================================
-
-        if self.memory.lead_collection:
-
-            # ---------- Collect Name ----------
-            if self.memory.waiting_for == "name":
-
-                self.memory.student_name = question.strip()
-                self.memory.waiting_for = "mobile"
-
-                return (
-                    f"Thank you {self.memory.student_name}! 😊\n\n"
-                    "Please share your 10-digit mobile number."
-                )
-
-            # ---------- Collect Mobile ----------
-            elif self.memory.waiting_for == "mobile":
-
-                mobile = question.strip()
-
-                if not mobile.isdigit() or len(mobile) != 10:
-                    return "Please enter a valid 10-digit mobile number."
-
-                self.memory.mobile = mobile
-                self.memory.waiting_for = "email"
-
-                return (
-                    "Thank you! 😊\n\n"
-                    "Please share your email address.\n"
-                    "Or type 'skip' if you don't want to provide it."
-                )
-
-            # ---------- Collect Email ----------
-            elif self.memory.waiting_for == "email":
-
-                if question.strip().lower() == "skip":
-                    self.memory.email = ""
-                else:
-                    self.memory.email = question.strip()
-
-                course = self.memory.get_course()
-
-                if course is None:
-                    return "Sorry! Something went wrong. Please start again."
-
-                lead = Lead(
-                    name=self.memory.student_name,
-                    mobile=self.memory.mobile,
-                    email=self.memory.email,
-                    course=course[COURSE_NAME],
-                    message="Website enquiry"
-                )
-
-                manager = LeadManager()
-                success, message = manager.save(lead)
-
-                if success:
-                    self.memory.clear()
-
-                    return (
-                        "🎉 Thank you!\n\n"
-                        "Your enquiry has been registered successfully.\n\n"
-                        "Our admission counsellor will contact you shortly."
-                    )
-
-                return message
+        if(self.memory.lead_collection or intent == Intent.ADMISSION):
+            response = self.lead_flow.process(
+            question,
+            self.memory,
+            )
+            if response:
+                return response
 
         # ==========================================
         # STEP 2 : Detect Admission Intent
         # ==========================================
 
-        question_lower = question.lower()
-
-        lead_keywords = [
-            "join",
-            "admission",
-            "enroll",
-            "enrol",
-            "register",
-            "interested",
-            "demo",
-            "book demo"
-        ]
-
-        if any(keyword in question_lower for keyword in lead_keywords):
-
-            course = self.kb.find_course(question)
-
-            if course:
-                self.memory.set_course(course)
-
-                self.memory.lead_collection = True
-                self.memory.waiting_for = "name"
-
-                return (
-                    "Wonderful! 😊\n\n"
-                    "I'd be happy to help you with admission.\n\n"
-                    "May I know your name?"
-                )
-
         # ==========================================
         # STEP 3 : Normal AI Conversation
         # ==========================================
+       
+        if intent == Intent.GREETING:
+            return (
+                "Hello! 😊 Welcome to Prime Computers.\n\n"
+                "How can I help you today?\n\n"
+                "You can ask me about our courses, fees, duration, or admission."
+            )
 
         course = self.kb.find_course(question)
 
